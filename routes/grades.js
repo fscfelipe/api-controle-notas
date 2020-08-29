@@ -108,4 +108,54 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/totalPorEstudanteMateria', async (req, res) => {
+  try {
+    const params = req.body;
+
+    let json = await fs.readFile('./arquivos/grades.json', 'utf8');
+    json = JSON.parse(json);
+
+    const grades = json.grades.filter((grade) => {
+      return grade.student == params.student && grade.subject == params.subject;
+    });
+
+    const total = grades.reduce((prev, curr) => {
+      return prev + curr.value;
+    }, 0);
+
+    res.status(200).send({ total: total });
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+router.get('/average/:subject/:type', async (req, res) => {
+  try {
+    let subject = req.params.subject;
+    let type = req.params.type;
+
+    let json = await fs.readFile('./arquivos/grades.json', 'utf8');
+    json = JSON.parse(json);
+
+    const grades = json.grades.filter((grade) => {
+      return grade.subject == subject && grade.type == type;
+    });
+
+    if (grades.length == 0)
+      throw new Error(
+        'Não foram encontrados registros para os parâmetros informados'
+      );
+
+    const total = grades.reduce((prev, curr) => {
+      return prev + curr.value;
+    }, 0);
+
+    const media = total / grades.length;
+
+    res.status(200).send({ media });
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
 export default router;

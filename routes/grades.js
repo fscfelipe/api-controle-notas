@@ -66,4 +66,26 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  let id = req.params.id;
+
+  try {
+    let json = await fs.readFile('./arquivos/grades.json', 'utf8');
+    json = JSON.parse(json);
+
+    let indice = json.grades.findIndex((grade) => {
+      return grade.id == id;
+    });
+
+    if (indice == -1) throw new Error('ID não existente');
+
+    json.grades.splice(indice, 1);
+
+    fs.writeFile('./arquivos/grades.json', JSON.stringify(json));
+    res.status(200).send();
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
 export default router;

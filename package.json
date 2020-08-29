@@ -1,0 +1,15 @@
+{
+  "name": "api-controle-notas",
+  "version": "1.0.0",
+  "description": "API para manipular dados de notas de alunos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Felipe Sobreira Cassimiro",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "type": "module"
+}

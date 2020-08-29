@@ -14,6 +14,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  let id = req.params.id;
+
+  try {
+    let json = await fs.readFile('./arquivos/grades.json', 'utf8');
+    json = JSON.parse(json);
+
+    let grade = json.grades.filter((grade) => {
+      return grade.id == id;
+    });
+
+    if (grade.length === 0) throw new Error('ID não existente');
+
+    res.status(200).send(grade);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ error: err.message });
+  }
+});
+
 router.post('/', async (req, res) => {
   let grade = req.body;
 

@@ -158,4 +158,36 @@ router.get('/average/:subject/:type', async (req, res) => {
   }
 });
 
+router.get('/:subject/:type/:order', async (req, res) => {
+  try {
+    let subject = req.params.subject;
+    let type = req.params.type;
+    let order = req.params.order;
+
+    let json = await fs.readFile('./arquivos/grades.json', 'utf8');
+    json = JSON.parse(json);
+
+    const grades = json.grades.filter((grade) => {
+      return grade.subject == subject && grade.type == type;
+    });
+
+    if (grades.length == 0)
+      throw new Error(
+        'Não foram encontrados registros para os parâmetros informados'
+      );
+
+    grades.sort((a, b) => {
+      if (order == 'desc') {
+        return b.value - a.value;
+      } else {
+        return a.value - b.value;
+      }
+    });
+
+    res.status(200).send(grades);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
 export default router;
